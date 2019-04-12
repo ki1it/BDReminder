@@ -1,1 +1,1 @@
-# BDReminder
+# TDD_chaincode
