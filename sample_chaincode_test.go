@@ -1,17 +1,16 @@
-package mainimport 
-(    
+package main
+import (    
 	"encoding/json"   
-	 "fmt"    
+	"fmt"    
 	"testing"   
-	 "github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
-func TestCreateLoanApplication (t *testing.T) 
-{    
+func TestCreateLoanApplication (t *testing.T) {    
 	fmt.Println("Entering TestCreateLoanApplication")    
-	attributes := make(map[string][]byte)    //Create a custom MockStub that internally uses shim.MockStub    
+	attributes := make(map[string][]byte)   
+	//Create a custom MockStub that internally uses shim.MockStub    
 	stub := shim.NewCustomMockStub("mockStub", new(SampleChaincode), attributes)    
-	if stub == nil 
-	{        
+	if stub == nil {        
 		t.Fatalf("MockStub creation failed")    
 	}
 }
