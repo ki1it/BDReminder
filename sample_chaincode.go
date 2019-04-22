@@ -43,3 +43,29 @@ func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	}    
 	return nil, errors.New("Invalid function name. Valid functions ['CreateLoanApplication']")
 }
+func NonDeterministicFunction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {    
+	fmt.Println("Entering NonDeterministicFunction")    
+	//Use random number generator to generate the ID    
+	var random = rand.New(rand.NewSource(time.Now().UnixNano()))    
+	var loanApplicationID = "la1" + strconv.Itoa(random.Intn(1000))    
+	var loanApplication = args[0]    
+	var la LoanApplication    
+	err := json.Unmarshal([]byte(loanApplication), &la)    
+	if err != nil {        
+		fmt.Println("Could not unmarshal loan application", err)        
+		return nil, err    
+	}    
+	la.ID = loanApplicationID    
+	laBytes, err := json.Marshal(&la)    
+	if err != nil {        
+		fmt.Println("Could not marshal loan application", err)        
+		return nil, err   
+		}    
+	err = stub.PutState(loanApplicationID, laBytes)    
+	if err != nil {        
+		fmt.Println("Could not save loan application to ledger", err)        
+		return nil, err    
+	}    
+	fmt.Println("Successfully saved loan application")    
+	return []byte(loanApplicationID), nil
+}
