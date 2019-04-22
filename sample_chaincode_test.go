@@ -38,7 +38,9 @@ func TestCreateLoanApplicationValidation2(t *testing.T) {
 	stub := shim.NewCustomMockStub("mockStub", new(SampleChaincode), attributes)    
 	if stub == nil {        
 		t.Fatalf("MockStub creation failed")    
-	}    stub.MockTransactionStart("t123")    
+	}
+	
+	stub.MockTransactionStart("t123")    
 	_, err := CreateLoanApplication(stub, []string{loanApplicationID, loanApplication})    
 	if err != nil {        
 		t.Fatalf("Expected CreateLoanApplication to succeed")    
