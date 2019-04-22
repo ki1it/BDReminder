@@ -16,9 +16,18 @@ func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 }
 func CreateLoanApplication(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {    
 	fmt.Println("Entering CreateLoanApplication")    
-	if len(args) < 2 {     
-		fmt.Println("Invalid number of args")     
+	if len(args) < 2 {        
+		fmt.Println("Invalid number of args")        
 		return nil, errors.New("Expected atleast two arguments for loan application creation")    
 	}    
-	return nil, nil
+	var loanApplicationId = args[0]    
+	var loanApplicationInput = args[1]    
+	//TODO: Include schema validation here    
+	err := stub.PutState(loanApplicationId, []byte(loanApplicationInput))    
+	if err != nil {        
+		fmt.Println("Could not save loan application to ledger", err)        
+		return nil, err    
+	}    
+	fmt.Println("Successfully saved loan application")    
+	return []byte(loanApplicationInput), nil
 }

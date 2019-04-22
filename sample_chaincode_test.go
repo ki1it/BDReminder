@@ -1,5 +1,6 @@
 package main
-import (       
+import (   
+	"encoding/json"     
 	"fmt"    
 	"testing"   
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -55,9 +56,11 @@ func TestCreateLoanApplicationValidation3(t *testing.T) {
 	if stub == nil {        
 		t.Fatalf("MockStub creation failed")    
 	}    
+
 	stub.MockTransactionStart("t123")    
 	CreateLoanApplication(stub, []string{loanApplicationID, loanApplication})    
 	stub.MockTransactionEnd("t123")    
+	
 	var la LoanApplication    
 	bytes, err := stub.GetState(loanApplicationID)    
 	if err != nil {        
