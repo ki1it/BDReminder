@@ -38,5 +38,8 @@ func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	if role != "Bank_Admin" {        
 		return nil, errors.New("caller with " + username + " and role " + role + " does not have access to invoke CreateLoanApplication")    
 	}    
-	return nil, errors.New("Invalid function name")
+	if function == "CreateLoanApplication" {        
+		return CreateLoanApplication(stub, args)    
+	}    
+	return nil, errors.New("Invalid function name. Valid functions ['CreateLoanApplication']")
 }
