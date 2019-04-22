@@ -152,3 +152,41 @@ func TestInvokeFunctionValidation2(t *testing.T) {
 		t.Fatalf("Expected valid loan application JSON string to be returned from CreateLoanApplication method")    
 	}
 }
+func TestNonDeterministicFunction(t *testing.T) {
+	fmt.Println("Entering TestNonDeterministicFunction")    
+	attributes := make(map[string][]byte)    
+	const peerSize = 4    
+	var stubs [peerSize]*shim.CustomMockStub    
+	var responses [peerSize][]byte    
+	var loanApplicationCustom = `{"propertyId":"prop1","landId":"land1","permitId":"permit1","buyerId":"vojha24","personalInfo":{"firstname":"Varun","lastname":"Ojha","dob":"dob","email":
+	"varun@gmail.com","mobile":"99999999"},"financialInfo":{"monthlySalary":16000,"otherExpenditure":0,"monthlyRent":4150,"monthlyLoanPayment":4000},"status":"Submitted",
+	"requestedAmount":40000,"fairMarketValue":58000,"approvedAmount":40000,"reviewedBy":"bond","lastModifiedDate":"21/09/2016 2:30pm"}`    
+	//Simulate execution of the chaincode function by multiple peers on their local ledgers    
+	for j := 0; j < peerSize; j++ {        
+		stub := shim.NewCustomMockStub("mockStub", new(SampleChaincode), attributes)        
+		if stub == nil {            
+			t.Fatalf("MockStub creation failed")        
+		}        
+		stub.MockTransactionStart("tx" + string(j))        
+		resp, err := NonDeterministicFunction(stub, []string{loanApplicationCustom})        
+		if err != nil {            
+			t.Fatalf("Could not execute NonDeterministicFunction ")        
+		}        
+		stub.MockTransactionEnd("tx" + string(j))        
+		stubs[j] = stub        
+		responses[j] = resp    
+	}    
+	for i := 0; i < peerSize; i++ {        
+		if i < (peerSize - 1) {            
+			la1Bytes, _ := stubs[i].GetState(string(responses[i]))            
+			la2Bytes, _ := stubs[i+1].GetState(string(responses[i+1]))            
+			la1 := string(la1Bytes)            
+			la2 := string(la2Bytes)            
+			if la1 != la2 {                
+				//TODO: Compare individual values to find mismatch                
+				t.Fatalf("Expected all loan applications to be identical. Non Deterministic chaincode error")            
+			}        
+		}        
+		//All loan applications retrieved from each of the peer's ledger's match. Function is deterministic    
+	}
+}
