@@ -14,5 +14,5 @@ func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 }
 func CreateLoanApplication(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {    
 	fmt.Println("Entering CreateLoanApplication")    
-	return nil, errors.New(“Expected atleast two arguments for loan application creation”)
+	return nil, errors.New("Expected atleast two arguments for loan application creation")
 }
