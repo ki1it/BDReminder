@@ -117,3 +117,17 @@ func TestInvokeValidation2(t *testing.T) {
 		t.Fatalf("Expected CreateLoanApplication to be invoked")    
 	}
 }
+func TestInvokeFunctionValidation(t *testing.T) {    
+	fmt.Println("Entering TestInvokeFunctionValidation")    
+	attributes := make(map[string][]byte)    
+	attributes["username"] = []byte("vojha24")    
+	attributes["role"] = []byte("Bank_Admin")    
+	stub := shim.NewCustomMockStub("mockStub", new(SampleChaincode), attributes)    
+	if stub == nil {        
+		t.Fatalf("MockStub creation failed")    
+	}    
+	_, err := stub.MockInvoke("t123", "InvalidFunctionName", []string{})    
+	if err == nil {        
+		t.Fatalf("Expected invalid function name error")    
+	}
+}
