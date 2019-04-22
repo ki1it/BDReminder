@@ -131,6 +131,7 @@ func TestInvokeFunctionValidation(t *testing.T) {
 		t.Fatalf("Expected invalid function name error")    
 	}
 }
+
 func TestInvokeFunctionValidation2(t *testing.T) {    
 	fmt.Println("Entering TestInvokeFunctionValidation2")    
 	attributes := make(map[string][]byte)    
@@ -140,8 +141,14 @@ func TestInvokeFunctionValidation2(t *testing.T) {
 	if stub == nil {        
 		t.Fatalf("MockStub creation failed")    
 	}    
-	_, err := stub.MockInvoke("t123", "CreateLoanApplication", []string{})    
+	bytes, err := stub.MockInvoke("t123", "CreateLoanApplication", []string{loanApplicationID, loanApplication})    
 	if err != nil {        
 		t.Fatalf("Expected CreateLoanApplication function to be invoked")    
+	}    
+	//A spy could have been used here to ensure CreateLoanApplication method actually got invoked.    
+	var la LoanApplication    
+	err = json.Unmarshal(bytes, &la)    
+	if err != nil {        
+		t.Fatalf("Expected valid loan application JSON string to be returned from CreateLoanApplication method")    
 	}
 }
