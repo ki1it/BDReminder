@@ -103,3 +103,17 @@ func TestInvokeValidation(t *testing.T) {
 		t.Fatalf("Expected unauthorized user error to be returned")    
 	}
 }
+func TestInvokeValidation2(t *testing.T) {    
+	fmt.Println("Entering TestInvokeValidation")    
+	attributes := make(map[string][]byte)    
+	attributes["username"] = []byte("vojha24")    
+	attributes["role"] = []byte("Bank_Admin")    
+	stub := shim.NewCustomMockStub("mockStub", new(SampleChaincode), attributes)   
+	if stub == nil {        
+		t.Fatalf("MockStub creation failed")    
+	}    
+	_, err := stub.MockInvoke("t123", "CreateLoanApplication", []string{loanApplicationID, loanApplication})    
+	if err != nil {        
+		t.Fatalf("Expected CreateLoanApplication to be invoked")    
+	}
+}
