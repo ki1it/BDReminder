@@ -31,3 +31,7 @@ func CreateLoanApplication(stub shim.ChaincodeStubInterface, args []string) ([]b
 	fmt.Println("Successfully saved loan application")    
 	return []byte(loanApplicationInput), nil
 }
+func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {    
+	fmt.Println("Entering Invoke")    
+	return nil, errors.New("unauthorized user")
+}
