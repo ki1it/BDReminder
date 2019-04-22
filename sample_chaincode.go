@@ -35,3 +35,13 @@ func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	fmt.Println("Entering Invoke")    
 	return nil, errors.New("unauthorized user")
 }
+func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {    
+	fmt.Println("Entering Invoke")    
+	ubytes, _ := stub.ReadCertAttribute("username")    
+	rbytes, _ := stub.ReadCertAttribute("role")    
+	username := string(ubytes)    
+	role := string(rbytes)    
+	if role != "Bank_Admin" {        
+		return nil, errors.New("caller with " + username + " and role " + role + " does not have         access to invoke CreateLoanApplication")    
+	}    return nil, nil
+}
