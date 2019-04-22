@@ -28,6 +28,7 @@ func CreateLoanApplication(stub shim.ChaincodeStubInterface, args []string) ([]b
 	fmt.Println("Successfully saved loan application")    
 	return []byte(loanApplicationInput), nil
 }
+
 func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {    
 	fmt.Println("Entering Invoke")    
 	ubytes, _ := stub.ReadCertAttribute("username")    
@@ -35,7 +36,7 @@ func (t *SampleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	username := string(ubytes)    
 	role := string(rbytes)    
 	if role != "Bank_Admin" {        
-		return nil, errors.New("caller with " + username + " and role " + role + " does not have         access to invoke CreateLoanApplication")    
+		return nil, errors.New("caller with " + username + " and role " + role + " does not have access to invoke CreateLoanApplication")    
 	}    
-	return nil, nil
+	return nil, errors.New("Invalid function name")
 }
