@@ -1,5 +1,7 @@
 package main 
-import (      
+import (   
+	"fmt"       
+	"errors"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 type SampleChaincode struct {}

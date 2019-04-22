@@ -1,6 +1,5 @@
 package main
-import (    
-	"encoding/json"   
+import (       
 	"fmt"    
 	"testing"   
 	"github.com/hyperledger/fabric/core/chaincode/shim"
