@@ -47,3 +47,42 @@ func TestCreateLoanApplicationValidation2(t *testing.T) {
 	}    
 	stub.MockTransactionEnd("t123")
 }
+
+func TestCreateLoanApplicationValidation3(t *testing.T) {    
+	fmt.Println("Entering TestCreateLoanApplicationValidation3")    
+	attributes := make(map[string][]byte)    
+	stub := shim.NewCustomMockStub("mockStub", new(SampleChaincode), attributes)    
+	if stub == nil {        
+		t.Fatalf("MockStub creation failed")    
+	}    
+	stub.MockTransactionStart("t123")    
+	CreateLoanApplication(stub, []string{loanApplicationID, loanApplication})    
+	stub.MockTransactionEnd("t123")    
+	var la LoanApplication    
+	bytes, err := stub.GetState(loanApplicationID)    
+	if err != nil {        
+		t.Fatalf("Could not fetch loan application with ID " + loanApplicationID)    
+	}    
+	err = json.Unmarshal(bytes, &la)    
+	if err != nil {        
+		t.Fatalf("Could not unmarshal loan application with ID " + loanApplicationID)    
+	}    
+	var errors = []string{}    
+	var loanApplicationInput LoanApplication    
+	err = json.Unmarshal([]byte(loanApplication), &loanApplicationInput)    
+	if la.ID != loanApplicationInput.ID {        
+		errors = append(errors, "Loan Application ID does not match")    
+	}    
+	if la.PropertyId != loanApplicationInput.PropertyId {        
+		errors = append(errors, "Loan Application PropertyId does not match")    
+	}    
+	if la.PersonalInfo.Firstname != loanApplicationInput.PersonalInfo.Firstname {        
+		errors = append(errors, "Loan Application PersonalInfo.Firstname does not match")    
+	}    //Can be extended for all fields    
+	if len(errors) > 0 {        
+		t.Fatalf("Mismatch between input and stored Loan Application")        
+		for j := 0; j < len(errors); j++ {            
+			fmt.Println(errors[j])        
+		}    
+	}
+}
