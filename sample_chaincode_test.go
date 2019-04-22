@@ -60,7 +60,7 @@ func TestCreateLoanApplicationValidation3(t *testing.T) {
 	stub.MockTransactionStart("t123")    
 	CreateLoanApplication(stub, []string{loanApplicationID, loanApplication})    
 	stub.MockTransactionEnd("t123")    
-	
+
 	var la LoanApplication    
 	bytes, err := stub.GetState(loanApplicationID)    
 	if err != nil {        
@@ -87,5 +87,19 @@ func TestCreateLoanApplicationValidation3(t *testing.T) {
 		for j := 0; j < len(errors); j++ {            
 			fmt.Println(errors[j])        
 		}    
+	}
+}
+func TestInvokeValidation(t *testing.T) {    
+	fmt.Println("Entering TestInvokeValidation")    
+	attributes := make(map[string][]byte)    
+	attributes["username"] = []byte("vojha24")    
+	attributes["role"] = []byte("client")    
+	stub := shim.NewCustomMockStub("mockStub", new(SampleChaincode), attributes)    
+	if stub == nil {        
+		t.Fatalf("MockStub creation failed")    
+	}   
+	_, err := stub.MockInvoke("t123", "CreateLoanApplication", []string{loanApplicationID, loanApplication})    
+	if err == nil {        
+		t.Fatalf("Expected unauthorized user error to be returned")    
 	}
 }
